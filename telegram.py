@@ -1,6 +1,5 @@
 import telepot
 
-import indi_test as tel
 
 class Telegram():
      def __init__(self):
@@ -17,6 +16,6 @@ class Telegram():
 
 if __name__ == '__main__':  
      bot = Telegram()
-     msg = "테스트메시지"
+    #  msg = "테스트메시지"
      print(bot.getUpdates()) # 내 ID 확인하는 방법
-     bot.sendMessage(msg)
+    #  bot.sendMessage(msg)

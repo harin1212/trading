@@ -10,9 +10,10 @@ import GiExpertControl as giLogin
 import GiExpertControl as giJongmokTRShow
 import GiExpertControl as giJongmokRealTime
 from pythonUI import Ui_MainWindow
+from telegram import Telegram
 
 main_ui = Ui_MainWindow()
-
+telegram_bot = Telegram()
 
 
 class indiWindow(QMainWindow):
@@ -44,15 +45,15 @@ class indiWindow(QMainWindow):
         giJongmokTRShow.SetCallBack('ReceiveData', self.giJongmokTRShow_ReceiveData)
         
         print(giLogin.GetCommState())
-        if giLogin.GetCommState() == 0: # 정상
-            print("")        
-        elif  giLogin.GetCommState() == 1: # 비정상
-        #본인의 ID 및 PW 넣으셔야 합니다.
-            login_return = giLogin.StartIndi('234114','test0365*','', 'C:\\SHINHAN-i\\indi\\GiExpertStarter.exe')
-            if login_return == True:
-                print("INDI 로그인 정보","INDI 정상 호출")
-            else:
-                print("INDI 로그인 정보","INDI 호출 실패")                    
+        # if giLogin.GetCommState() == 0: # 정상
+        #     print("")        
+        # elif  giLogin.GetCommState() == 1: # 비정상
+        # #본인의 ID 및 PW 넣으셔야 합니다.
+        #     login_return = giLogin.StartIndi('234114','test0365*','', 'C:\\SHINHAN-i\\indi\\giexpertstarter.exe')
+        #     if login_return == True:
+        #         print("INDI 로그인 정보","INDI 정상 호출")
+        #     else:
+        #         print("INDI 로그인 정보","INDI 호출 실패")                    
 
         
 
@@ -265,6 +266,7 @@ class indiWindow(QMainWindow):
             nCnt = giCtrl.GetSingleRowCount()
             print("nCnt : ",nCnt)
             main_ui.label_9.setText(str(giCtrl.GetSingleData(3)))
+            telegram_bot.sendMessage(giCtrl.GetSingleBlockData[0])
             
 
         
