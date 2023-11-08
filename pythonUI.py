@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QFont
 
 
 class Ui_MainWindow(object):
@@ -189,6 +190,9 @@ class Ui_MainWindow(object):
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(5)
         self.tableWidget.setRowCount(11)
+
+        self.tableWidget.setColumnWidth(1,185)
+
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setVerticalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
@@ -266,7 +270,7 @@ class Ui_MainWindow(object):
         self.comboBox_2.setItemText(1, _translate("MainWindow", "매도"))
         self.pushButton_3.setText(_translate("MainWindow", "주문하기"))
         self.groupBox_3.setTitle(_translate("MainWindow", "매수 신호"))
-        self.label_3.setText(_translate("MainWindow", "시가대비 상승율 ex) 5, 10, 15"))
+        self.label_3.setText(_translate("MainWindow", "시가대비 상승율 ex) 5, 15"))
         item = self.tableWidget_2.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "1"))
         item = self.tableWidget_2.verticalHeaderItem(1)
@@ -302,7 +306,7 @@ class Ui_MainWindow(object):
         item = self.tableWidget_2.horizontalHeaderItem(6)
         item.setText(_translate("MainWindow", "급증률"))
         self.pushButton_2.setText(_translate("MainWindow", "매수신호 조회"))
-        self.label_4.setText(_translate("MainWindow", "거래량 조건 ex) 1000, 2000"))
+        self.label_4.setText(_translate("MainWindow", "거래량 조건 ex) 1000, 20000"))
         self.groupBox_5.setTitle(_translate("MainWindow", "뉴스"))
         self.label_10.setText(_translate("MainWindow", "종목코드"))
         item = self.tableWidget_3.verticalHeaderItem(0)
@@ -394,4 +398,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    font = QFont("나눔고딕", 11)
+    app.setFont(font)
     sys.exit(app.exec_())

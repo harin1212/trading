@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QAxContainer import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QFont
 import pandas as pd
 import GiExpertControl as giLogin
 import GiExpertControl as giJongmokTRShow
@@ -45,17 +46,16 @@ class indiWindow(QMainWindow):
         giJongmokTRShow.SetCallBack('ReceiveData', self.giJongmokTRShow_ReceiveData)
         
         print(giLogin.GetCommState())
-        # if giLogin.GetCommState() == 0: # 정상
-        #     print("")        
-        # elif  giLogin.GetCommState() == 1: # 비정상
-        # #본인의 ID 및 PW 넣으셔야 합니다.
-        #     login_return = giLogin.StartIndi('234114','test0365*','', 'C:\\SHINHAN-i\\indi\\giexpertstarter.exe')
-        #     if login_return == True:
-        #         print("INDI 로그인 정보","INDI 정상 호출")
-        #     else:
-        #         print("INDI 로그인 정보","INDI 호출 실패")                    
+        if giLogin.GetCommState() == 0: # 정상
+            print("")        
+        elif  giLogin.GetCommState() == 1: # 비정상
+        #본인의 ID 및 PW 넣으셔야 합니다.
+            login_return = giLogin.StartIndi('234114','test0365*','', 'C:\\SHINHAN-i\\indi\\giexpertstarter.exe')
+            if login_return == True:
+                print("INDI 로그인 정보","INDI 정상 호출")
+            else:
+                print("INDI 로그인 정보","INDI 호출 실패")                    
 
-        
 
     ## 계좌별 잔고 및 주문 체결 조회
     def pushButton_1_clicked(self):
@@ -76,8 +76,10 @@ class indiWindow(QMainWindow):
 
     ## 매수신호 조회 - 시가대비 상승율 조회 && 거래량 급등락 종목 조회
     def pushButton_2_clicked(self):
+        indiWindow.tr_data = []
+        indiWindow.tr_new_data = []
         TR_Name = "TR_1862"
-        indiWindow.siga_range = int(main_ui.textEdit_7.toPlainText())
+        indiWindow.siga_range = float(main_ui.textEdit_7.toPlainText())
         ret = giJongmokTRShow.SetQueryName(TR_Name)        
         rqid = giJongmokTRShow.RequestData()
         print((rqid))
@@ -207,8 +209,6 @@ class indiWindow(QMainWindow):
             print("nCnt : ",nCnt)
             print(giJongmokTRShow.GetErrorMessage())
             print("siga_range", (indiWindow.siga_range))
-            indiWindow.tr_data = []
-            indiWindow.tr_new_data = []
             for i in range(0, nCnt):
                 if (float(giCtrl.GetMultiData(i, 4)) > indiWindow.siga_range) :
                     indiWindow.tr_data.append({
@@ -218,12 +218,14 @@ class indiWindow(QMainWindow):
                         "시가": str(giCtrl.GetMultiData(i, 3)),
                         "시가대비상승율": str(giCtrl.GetMultiData(i, 4))
                     })
+                else :
+                    indiWindow.tr_data[i] = []
             print(indiWindow.tr_data)
+            print(giJongmokTRShow.GetErrorMessage())
             # time.sleep(3)
           
           
         if TR_Name == "TR_1864":
-            tr_new_data = []
             nCnt = giCtrl.GetMultiRowCount()
             print("nCnt : ", nCnt)
             for i in range(0, nCnt):
@@ -243,14 +245,18 @@ class indiWindow(QMainWindow):
                             "누적거래량": str(giCtrl.GetMultiData(i, 7)),
                             "급증률": str(giCtrl.GetMultiData(i, 8))
                         })
+            print(giJongmokTRShow.GetErrorMessage())
+            print("tr_new_data",indiWindow.tr_new_data)
+            telegram_bot.sendMessage(str(indiWindow.tr_new_data[0]))
+            telegram_bot.sendMessage(str(indiWindow.tr_new_data[1]))
             for k in range(0, 10):
-                main_ui.tableWidget_2.setItem(k,0,QTableWidgetItem(indiWindow.tr_new_data[k]["단축코드"])) #단축코드
-                main_ui.tableWidget_2.setItem(k,1,QTableWidgetItem(indiWindow.tr_new_data[k]["한글종목명"])) #한글종목명
-                main_ui.tableWidget_2.setItem(k,2,QTableWidgetItem(indiWindow.tr_new_data[k]["현재가"])) #현재가
-                main_ui.tableWidget_2.setItem(k,3,QTableWidgetItem(indiWindow.tr_new_data[k]["시가"])) #시가
-                main_ui.tableWidget_2.setItem(k,4,QTableWidgetItem(indiWindow.tr_new_data[k]["시가대비상승율"])) #시가대비상승율
-                main_ui.tableWidget_2.setItem(k,5,QTableWidgetItem(indiWindow.tr_new_data[k]["누적거래량"])) #누적거래량
-                main_ui.tableWidget_2.setItem(k,6,QTableWidgetItem(indiWindow.tr_new_data[k]["급증률"])) #급증률
+                main_ui.tableWidget_2.setItem(k,0,QTableWidgetItem(str(indiWindow.tr_new_data[k]["단축코드"]))) #단축코드
+                main_ui.tableWidget_2.setItem(k,1,QTableWidgetItem(str(indiWindow.tr_new_data[k]["한글종목명"]))) #한글종목명
+                main_ui.tableWidget_2.setItem(k,2,QTableWidgetItem(str(indiWindow.tr_new_data[k]["현재가"]))) #현재가
+                main_ui.tableWidget_2.setItem(k,3,QTableWidgetItem(str(indiWindow.tr_new_data[k]["시가"]))) #시가
+                main_ui.tableWidget_2.setItem(k,4,QTableWidgetItem(str(indiWindow.tr_new_data[k]["시가대비상승율"]))) #시가대비상승율
+                main_ui.tableWidget_2.setItem(k,5,QTableWidgetItem(str(indiWindow.tr_new_data[k]["누적거래량"]))) #누적거래량
+                main_ui.tableWidget_2.setItem(k,6,QTableWidgetItem(str(indiWindow.tr_new_data[k]["급증률"]))) #급증률
 
 
         if TR_Name == "TR_3100_D" :
@@ -266,7 +272,7 @@ class indiWindow(QMainWindow):
             nCnt = giCtrl.GetSingleRowCount()
             print("nCnt : ",nCnt)
             main_ui.label_9.setText(str(giCtrl.GetSingleData(3)))
-            telegram_bot.sendMessage(giCtrl.GetSingleBlockData[0])
+            telegram_bot.sendMessage(str(giCtrl.GetSingleBlockData(0)))
             
 
         
@@ -277,9 +283,10 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     IndiWindow = indiWindow()    
     IndiWindow.show()
+    font = QFont("나눔고딕", 10)
+    app.setFont(font)
     app.exec_()
 
-    
     # if IndiWindow.MainSymbol != "":
     #     giJongmokRealTime.UnRequestRTReg("SC", "")
 
