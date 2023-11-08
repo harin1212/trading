@@ -1,9 +1,13 @@
+from dotenv import load_dotenv
+import os 
 import telepot
+
+load_dotenv()
 
 
 class Telegram():
      def __init__(self):
-         my_token = "6606579753:AAFMXGy-aVLA_ZkCqBjH3WF6ILeWcDBq5do" # 봇파더에서 얻은 토큰값을 입력합니다.
+         my_token = os.environ.get('BOT_TOKEN') # 봇파더에서 얻은 토큰값을 입력합니다.
          self.bot = telepot.Bot(token=my_token)
 
      def sendMessage(self, message):
