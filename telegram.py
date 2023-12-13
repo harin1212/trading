@@ -4,6 +4,7 @@ import telepot
 
 load_dotenv()
 
+
 class Telegram():
      def __init__(self):
          my_token = os.environ.get('BOT_TOKEN') # 봇파더에서 얻은 토큰값을 입력합니다.
